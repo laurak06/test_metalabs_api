@@ -5,7 +5,7 @@ HOST = config('HOST_FOR_SEND_MAIL')
 
 
 def send_activation_email(email, activation_code):
-    activation_url = f'{HOST}/users/activate/?code={activation_code}'
+    activation_url = f'{HOST}/api/v1/users/activate/?code={activation_code}'
     message = ''
     html = f'''
 <h1>Для активации нажмите на кнопку</h1>

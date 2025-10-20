@@ -32,4 +32,4 @@ class LoginLog(models.Model):
     user_agent = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"{self.user.username} - {self.timestamp}"
+        return f"{self.user.email} - {self.timestamp}"

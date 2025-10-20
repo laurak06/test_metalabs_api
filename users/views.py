@@ -58,14 +58,17 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        if response.status_code == 200:
-            user = self.get_serializer().validated_data['user']
-            ip = request.META.get('REMOTE_ADDR')
-            ua = request.META.get('HTTP_USER_AGENT', '')
-            LoginLog.objects.create(user=user, ip_address=ip, user_agent=ua)
-        return response
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
+        user = serializer.user  # корректный пользователь
+        ip = request.META.get('REMOTE_ADDR', '')
+        ua = request.META.get('HTTP_USER_AGENT', '')
+
+        # Создаём запись логина
+        LoginLog.objects.create(user=user, ip_address=ip, user_agent=ua)
+
+        return Response(serializer.validated_data, status=200)
 class LoginLogListView(generics.ListAPIView):
     queryset = LoginLog.objects.all()
     serializer_class = LoginLogSerializer

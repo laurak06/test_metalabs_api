@@ -29,7 +29,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'email')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+        read_only_fields = ('id', 'email')
 
 class LoginLogSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -67,8 +68,10 @@ class RestorePasswordSerializer(serializers.Serializer):
         user.save()
         return user
 
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-        data['user_id'] = self.user.id  # можно добавить user_id
+        # self.user доступен внутри сериализатора
+        data['user_id'] = self.user.id
         return data
